@@ -1,0 +1,12 @@
+# Never upload secrets or local build output to Vercel.
+.env
+.env.*
+!.env.example
+android
+out
+.next
+node_modules
+test-results
+playwright-report
+*.keystore
+*.jks

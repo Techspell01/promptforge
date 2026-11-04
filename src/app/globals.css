@@ -1,0 +1,327 @@
+@import "tailwindcss";
+
+/*
+  Strict monochrome. Every colour in the app is one of these tokens; tests/unit/palette.test.ts
+  fails the build if any other colour, or any text pair below WCAG AA, appears.
+  Depth comes from greys, borders and translucent black or white shadows, never from hue.
+*/
+:root {
+  color-scheme: light;
+  --canvas: #ffffff;
+  --card: #ffffff;
+  --surface: #f5f5f5;
+  --raised: #ffffff;
+  --ink: #0a0a0a;
+  --muted: #666666;
+  --line: #e5e5e5;
+  --line-strong: #d4d4d4;
+  --control: #666666;
+  --hover: #f5f5f5;
+  --inverse: #0a0a0a;
+  --inverse-ink: #ffffff;
+  --skeleton: #e5e5e5;
+  --disabled: #666666;
+  --focus: #000000;
+  --dots: rgb(0 0 0 / 0.07);
+  --header: rgb(255 255 255 / 0.72);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.1);
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.06), 0 16px 40px -16px rgb(0 0 0 / 0.18);
+  --shadow-pill: 0 1px 2px rgb(0 0 0 / 0.08), 0 0 0 1px rgb(0 0 0 / 0.04);
+  --highlight: inset 0 1px 0 rgb(255 255 255 / 0);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #000000;
+  --card: #0a0a0a;
+  --surface: #111111;
+  --raised: #1a1a1a;
+  --ink: #f5f5f5;
+  --muted: #a3a3a3;
+  --line: #1a1a1a;
+  --line-strong: #2a2a2a;
+  --control: #666666;
+  --hover: #1a1a1a;
+  --inverse: #f5f5f5;
+  --inverse-ink: #000000;
+  --skeleton: #1a1a1a;
+  --disabled: #666666;
+  /* A black outline is invisible on a black canvas, so dark mode focus uses white. */
+  --focus: #ffffff;
+  --dots: rgb(255 255 255 / 0.06);
+  --header: rgb(0 0 0 / 0.66);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 12px 32px -16px rgb(0 0 0 / 0.9);
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.6), 0 20px 48px -20px rgb(0 0 0 / 1);
+  --shadow-pill: 0 1px 2px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.06);
+  --highlight: inset 0 1px 0 rgb(255 255 255 / 0.05);
+}
+
+/* Follow the OS until the user picks a theme, without a flash of the wrong one. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --canvas: #000000;
+    --card: #0a0a0a;
+    --surface: #111111;
+    --raised: #1a1a1a;
+    --ink: #f5f5f5;
+    --muted: #a3a3a3;
+    --line: #1a1a1a;
+    --line-strong: #2a2a2a;
+    --control: #666666;
+    --hover: #1a1a1a;
+    --inverse: #f5f5f5;
+    --inverse-ink: #000000;
+    --skeleton: #1a1a1a;
+    --disabled: #666666;
+    /* A black outline is invisible on a black canvas, so dark mode focus uses white. */
+    --focus: #ffffff;
+    --dots: rgb(255 255 255 / 0.06);
+    --header: rgb(0 0 0 / 0.66);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 12px 32px -16px rgb(0 0 0 / 0.9);
+    --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.6), 0 20px 48px -20px rgb(0 0 0 / 1);
+    --shadow-pill: 0 1px 2px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.06);
+    --highlight: inset 0 1px 0 rgb(255 255 255 / 0.05);
+  }
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-card: var(--card);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-control: var(--control);
+  --color-hover: var(--hover);
+  --color-inverse: var(--inverse);
+  --color-inverse-ink: var(--inverse-ink);
+  --color-skeleton: var(--skeleton);
+  --color-disabled: var(--disabled);
+  --font-sans:
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-mono:
+    var(--font-jetbrains), ui-monospace, "Cascadia Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+html {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01", "ss03";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* App feel: the shell fills the screen and only the content area scrolls, without rubber-banding. */
+html,
+body {
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+[role="radio"],
+nav a {
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+::selection {
+  background: var(--inverse);
+  color: var(--inverse-ink);
+}
+
+/* Element defaults live in the base layer so utility classes (e.g. inverted nav items) always win. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+/* A faint dot grid behind everything. A mask keeps it a single token colour in both themes. */
+.backdrop-dots {
+  background-color: var(--dots);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='1.5' cy='1.5' r='1' fill='black'/%3E%3C/svg%3E");
+  mask-repeat: repeat;
+}
+
+.shadow-soft {
+  box-shadow: var(--highlight), var(--shadow);
+}
+
+.shadow-lift {
+  box-shadow: var(--highlight), var(--shadow-lift);
+}
+
+.shadow-pill {
+  box-shadow: var(--shadow-pill);
+}
+
+.glass {
+  background: var(--header);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+}
+
+.scrollbar-quiet {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@keyframes progress-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+.progress-line {
+  animation: progress-slide 1.1s linear infinite;
+}
+
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.skeleton-pulse {
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise-in {
+  animation: rise-in 150ms ease-out both;
+}
+
+/* Sheets: bottom sheet on phones, centred dialog from md up. */
+dialog.sheet {
+  margin: auto auto 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-bottom: 0;
+  border-radius: 24px 24px 0 0;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--highlight), var(--shadow-lift);
+}
+
+dialog.sheet[open] {
+  animation: sheet-up 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+dialog.sheet::backdrop {
+  background: rgb(0 0 0 / 0.45);
+  backdrop-filter: blur(3px);
+}
+
+@media (min-width: 768px) {
+  dialog.sheet {
+    margin: auto;
+    max-width: 34rem;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 24px;
+  }
+  dialog.sheet[open] {
+    animation: sheet-pop 180ms ease-out;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes sheet-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.toast-in {
+  animation: toast-in 180ms ease-out both;
+}
+
+/* While the model works: the status line breathes. */
+@keyframes breathe {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.breathe {
+  animation: breathe 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .progress-line {
+    animation: none;
+    transform: none;
+    width: 100%;
+    opacity: 0.6;
+  }
+}

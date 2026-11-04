@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+android
+supabase/.temp
+src/server/database.types.ts
+package-lock.json
+playwright-report
+test-results
